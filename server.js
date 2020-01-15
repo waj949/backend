@@ -15,13 +15,15 @@ const express               = require("express"),
       users                 = require("./routes/users.js"),
       requests              = require("./routes/requests.js"),
       friends               = require("./routes/friends.js"),
-      config                = require("./config.js")
+      config                = require("./config.js"),
+      cors                  = require("cors")
 
 mongoose.connect("mongodb://waar:waarwaar7@ds263368.mlab.com:63368/nodes" , 
 { useUnifiedTopology: true ,  useNewUrlParser: true })      
 mongoose.connection.once("open" , ()=> console.log("workin properly"))
 
 app.use(bodyParser.json())
+app.use(cors())
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new JwtStrategy({
