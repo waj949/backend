@@ -1,7 +1,7 @@
 const User = require("../models/user.js"),
   bcrypt = require("bcrypt"),
   config = require("../config.js"),
-  Request = require("../models/request.js");
+  Request = require("../models/request.js"),
   Friendship = require("../models/friendship.js");
 
   const functions = {
@@ -11,6 +11,10 @@ const User = require("../models/user.js"),
     if (err) throw err;
     else res.json(users);
   });
+},
+
+getUser : (req,res)=>{
+
 },
 
  signUp : (req, res) => {
