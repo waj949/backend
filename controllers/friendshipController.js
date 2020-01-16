@@ -8,7 +8,8 @@ const getFriends = (req,res)=>{
               .exec((err,found)=>{
         if (err) return res.json({success : false, err})
         res.json(found.map(one =>{
-            return one.first._id == req.user._id? one.second : one.first
+          console.log(typeof one.first._id ,typeof req.user._id)
+            return one.first._id.toString() == req.user._id.toString() ? one.second : one.first
         }))
     })
   }

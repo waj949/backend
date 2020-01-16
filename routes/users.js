@@ -39,7 +39,7 @@ Router.route("/:username").get(AUTH, (req, res) => {
                         found.sentRequest = true
                         res.json({success: true, user: found})
                     }else {
-                  found.sentRequest = true
+                  found.sentRequest = false
                 Request.findOne({sender: found._id , receiver: req.user._id }, (err, gotrequest)=>{
                     if(gotrequest){
                     found.gotrequest = true
