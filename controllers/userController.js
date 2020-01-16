@@ -38,7 +38,7 @@ const User = require("../models/user.js"),
           User.create(req.body, (err, created) => {
             if (err) return res.json({ err });
             created.password = undefined;
-            res.json({ created });
+            res.json({success : true});
           });
         }
       });
