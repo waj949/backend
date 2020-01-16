@@ -1,21 +1,29 @@
 const User = require("../models/user.js"),
   bcrypt = require("bcrypt"),
   config = require("../config.js"),
-  Request = require("../models/request.js");
+  Request = require("../models/request.js"),
   Friendship = require("../models/friendship.js");
 
-const getUsers = (req, res) => {
+  const functions = {
+
+ getUsers : (req, res) => {
   User.find({}, (err, users) => {
     if (err) throw err;
     else res.json(users);
   });
-};
+},
 
-const signUp = (req, res) => {
+getUser : (req,res)=>{
+
+},
+
+ signUp : (req, res) => {
   if (!req.body.username)
     return res.json({ success: false, msg: "username is required" });
   if (!req.body.password)
     return res.json({ success: false, msg: "password is required" });
+  if (req.body.password.length < 8)
+    return res.json({ success: false, msg: "password should be 8 characters or more" });
   if (!req.body.firstname)
     return res.json({ success: false, msg: "firstname is required" });
   if (!req.body.lastname)
@@ -34,15 +42,15 @@ const signUp = (req, res) => {
           User.create(req.body, (err, created) => {
             if (err) return res.json({ err });
             created.password = undefined;
-            res.json({ created });
+            res.json({success : true});
           });
         }
       });
     }
   });
-};
+},
 
-const signIn = (req, res) => {
+ signIn : (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   User.findOne({ username }, (err, user) => {
@@ -67,9 +75,9 @@ const signIn = (req, res) => {
       }
     });
   });
-};
+},
 
-const sendFriendRequest = (req, res) => {
+ sendFriendRequest : (req, res) => {
 
     Friendship.findOne(
         { $or: [
@@ -98,9 +106,9 @@ const sendFriendRequest = (req, res) => {
 
         })
 
-}
+},
 
-const removeFriendRequest = (req, res) => {
+ removeFriendRequest : (req, res) => {
   Request.findOne({
       $or: [
         { sender: req.user._id, receiver: req.params.id },
@@ -116,12 +124,7 @@ const removeFriendRequest = (req, res) => {
       });
     }
   );
-};
+}
 
-module.exports = {
-  getUsers,
-  signUp,
-  signIn,
-  sendFriendRequest,
-  removeFriendRequest
-};
+  }
+module.exports = functions;
