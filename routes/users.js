@@ -95,7 +95,7 @@ Router.route("/:id/messages")
       (err, created) => {
         Message.findById(created._id).populate("sender").exec((err,found)=>{
           if (err) res.json({ success: false, err });
-          else res.json(created);
+          else res.json(found);
 
         })
       }
