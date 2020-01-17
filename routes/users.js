@@ -20,47 +20,51 @@ Router.route("/:username").get(AUTH, (req, res) => {
     .exec((err, found) => {
       if (!found)
         return res.json({ success: false, msg: "there's no such user" });
-      Friendship.findOne({
-        $or: [
-          { first: req.user._id, second: found._id },
-          { first: found._id, second: req.user._id }
-        ]
-      }, (err , friends)=>{
-          if(err) res.json({success : false, err})
-          else{ 
-              if(friends){
-                found.areFriends = true
-                res.json({success: true, user: found})
-              }else{
-                found.areFriends = false
-                Request.findOne({sender: req.user._id , receiver: found._id }, (err, request)=>{
-                    if(err) return res.json({success : false, err})
-                    if(request){
-                        found.sentRequest = true
-                        res.json({success: true, user: found})
-                    }else {
-                  found.sentRequest = false
-                Request.findOne({sender: found._id , receiver: req.user._id }, (err, gotrequest)=>{
-                    if(gotrequest){
-                    found.gotrequest = true
-                    res.json({success: true, user: found})
-
-                    }else{
-                        found.gotrequest = false
-                        res.json({success: true, user: found})
- 
-                    }
-                })
-
-                    }
-                })
-
-              }
+      Friendship.findOne(
+        {
+          $or: [
+            { first: req.user._id, second: found._id },
+            { first: found._id, second: req.user._id }
+          ]
+        },
+        (err, friends) => {
+          if (err) res.json({ success: false, err });
+          else {
+            if (friends) {
+              found.areFriends = true;
+              res.json({ success: true, user: found });
+            } else {
+              found.areFriends = false;
+              Request.findOne(
+                { sender: req.user._id, receiver: found._id },
+                (err, request) => {
+                  if (err) return res.json({ success: false, err });
+                  if (request) {
+                    found.sentRequest = true;
+                    res.json({ success: true, user: found });
+                  } else {
+                    found.sentRequest = false;
+                    Request.findOne(
+                      { sender: found._id, receiver: req.user._id },
+                      (err, gotrequest) => {
+                        if (gotrequest) {
+                          found.gotrequest = true;
+                          res.json({ success: true, user: found });
+                        } else {
+                          found.gotrequest = false;
+                          res.json({ success: true, user: found });
+                        }
+                      }
+                    );
+                  }
+                }
+              );
+            }
           }
-      });
+        }
+      );
     });
 });
-
 
 Router.route("/:id/sendrequest").get(AUTH, userController.sendFriendRequest);
 Router.route("/:id/removerequest").get(
@@ -94,3 +98,20 @@ Router.route("/:id/messages")
       }
     );
   });
+Router.route("/:id/removefriend").get(AUTH, (req, res) => {
+  const friend = req.params.id;
+  Friendship.findOneAndDelete({
+    $or: [
+      { first: friend, second: req.user._id },
+      { first: req.user._id, second: friend }
+    ]
+  }).then(data => {
+    res.json({ success: true });
+  });
+});
+Router.route("/:id/acceptrequest").get(AUTH, (req, res) => {
+  const user = req.params.id;
+  Friendship.create({ first: user, second: req.user._id }).then(data => {
+    res.redirect(`/api/users/${user}/removerequest`);
+  });
+});
