@@ -15,7 +15,27 @@ Router.route("/latest").get(AUTH, (req, res) => {
         // Message.find()
         Message.find({$or : [...firstIds,...secondIds].map(one =>{
             return {_id : one.msgId}
-        })}).populate(["sender" , "receiver"]).exec((err,wow)=> res.json(wow))
+        })}).populate(["sender" , "receiver"]).exec((err,wow)=>{
+                    var unique = {}
+                    var latest = []
+                    wow.forEach(one => {
+        
+                        if (one.sender.username == req.user.username){
+                           if(!unique[one.receiver.username]){
+                               unique[one.receiver.username] = true
+                               latest.push(one)
+
+                           }
+                        }else{
+                            if(!unique[one.sender.username]){
+                                unique[one.sender.username] = true
+                                latest.push(one)
+ 
+                            }                        }   
+                         
+                    })
+                    res.json(latest)
+            })
 
     });
   });
