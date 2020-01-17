@@ -19,7 +19,7 @@ Router.route("/:id/add").post(AUTH, (req, res) => {
     const group = req.params.id
     const friend = req.user
     const newMember = req.body.user
-    Friendship.exists({ $or : [{first: friend, second: newMember}, {first: newMember, second: friend}]}).then(data => {
+    Friendship.exists({ $or : [{first: friend, second: newMember}, {first: newMe, second: friend}]}).then(data => {
    if(!data) return res.json({success: false, msg:"you're not friends"})
     Group.findByIdAndUpdate(group, {$push: {users: newMember}}).then(data => {
         res.json({success: true})
