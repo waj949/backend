@@ -60,6 +60,8 @@ Router.route("/:username").get(AUTH, (req, res) => {
       });
     });
 });
+
+
 Router.route("/:id/sendrequest").get(AUTH, userController.sendFriendRequest);
 Router.route("/:id/removerequest").get(
   AUTH,
