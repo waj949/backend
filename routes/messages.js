@@ -15,7 +15,7 @@ Router.route("/latest").get(AUTH, (req, res) => {
         // Message.find()
         Message.find({$or : [...firstIds,...secondIds].map(one =>{
             return {_id : one.msgId}
-        })}).populate(["sender" , "receiver"]).exec((err,wow)=>{
+        })}).sort({_id : -1}).populate(["sender" , "receiver"]).exec((err,wow)=>{
                     var unique = {}
                     var latest = []
                     wow.forEach(one => {
