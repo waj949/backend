@@ -48,8 +48,14 @@ passport.use(new JwtStrategy({
     
 
 
-app.get("/" , (req,res) => {
-    res.json({team : "Waar" ,project : "Nodes", version : "1.0.0"})
+app.get("/api/chatroom" , (req,res) => {
+    console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
 })
+
+app.get("/api/messages/latest" , (req,res) => {
+    console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
+})
+
+
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));
       
