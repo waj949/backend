@@ -28,6 +28,8 @@ Router.route("/:id/messages")
     .post(AUTH, messagesController.createMessage);
 
 Router.route("/:id/removefriend").get(AUTH, friendsController.removeFriend);
+
+
 Router.route("/:id/acceptrequest").get(AUTH, (req, res) => {
     const user = req.params.id;
     Friendship.create({ first: user, second: req.user._id }).then(data => {

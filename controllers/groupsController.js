@@ -34,7 +34,9 @@ exports.addMember = (req, res) => {
  * @param {Object} res EXPECTED to have all the groups that user is In 
  */
 exports.getGroups = (req, res) => {
-    Group.find({ users: { $in: req.user._id } }).then(data => res.json(data));
+
+  Group.find({ users: { $in: req.user._id } }).populate("users").then(data => res.json(data));
+
 };
 
 
@@ -62,18 +64,21 @@ exports.createGroup = (req, res) => {
  * @param {Object} res @EXPECTED success status of the group has been  deleted or left 
  */
 exports.leaveGroup = (req, res) => {
-    const user = req.user;
-    Group.findOne({ admin: user._id, _id: req.params.id }).then(found => {
-        if (found) {
-            Group.findByIdAndRemove(req.params.id).then(deleted => {
-                res.json({ success: true, msg: "Left Successfully" });
-            });
-        } else {
-            Group.findByIdAndUpdate(req.params.id, {
-                $pull: { users: user._id }
-            }).then(data => {
-                res.json({ success: true, msg: "Left Successfully" });
-            });
-        }
-    });
+
+
+  const user = req.user;
+  Group.findOne({ admin: user._id, _id: req.params.id }).then(found => {
+    if (found) {
+      Group.findByIdAndRemove(req.params.id).then(deleted => {
+        res.json({ success: true, msg: "Left Successfully, group deleted" });
+      });
+    } else {
+      Group.findByIdAndUpdate(req.params.id, {
+        $pull: { users: user._id }
+      }).then(data => {
+        res.json({ success: true, msg: "Left Successfully" });
+      });
+    }
+  });
+
 };
