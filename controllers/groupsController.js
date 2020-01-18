@@ -21,7 +21,7 @@ exports.addMember = (req, res) => {
 };
 
 exports.getGroups = (req, res) => {
-  Group.find({ users: { $in: req.user._id } }).then(data => res.json(data));
+  Group.find({ users: { $in: req.user._id } }).populate("users").then(data => res.json(data));
 };
 exports.createGroup = (req, res) => {
   req.body.admin = req.user._id;

@@ -14,6 +14,7 @@ const express               = require("express"),
       Group                 = require("./models/group.js"),
       users                 = require("./routes/users.js"),
       requests              = require("./routes/requests.js"),
+      messages              = require("./routes/messages.js"),
       friends               = require("./routes/friends.js"),
       config                = require("./config.js"),
       cors                  = require("cors"),
@@ -45,6 +46,7 @@ passport.use(new JwtStrategy({
     app.use("/api/requests" , requests)
     app.use("/api/friends" , friends)
     app.use('/api/groups', groups)
+    app.use('/api/messages', messages)
     
 
 

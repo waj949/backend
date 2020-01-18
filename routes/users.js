@@ -93,8 +93,11 @@ Router.route("/:id/messages")
         content: req.body.content
       },
       (err, created) => {
-        if (err) res.json({ success: false, err });
-        else res.json(created);
+        Message.findById(created._id).populate("sender").exec((err,found)=>{
+          if (err) res.json({ success: false, err });
+          else res.json(found);
+
+        })
       }
     );
   });
