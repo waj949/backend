@@ -5,14 +5,15 @@ const AUTH = require("passport").authenticate("jwt", { session: false });
 Router.route("/latest").get(AUTH, (req, res) => {
 
   Message.aggregate([
-    { $match: { sender: req.user._id } },
-    { $group: { _id: "$receiver", msgId: { $last: "$_id" } } }
+    { $match: { sender: req.user._id , receiver:{$ne : null}} },// select messages of the sender 
+    { $group: { _id: "$receiver", msgId: { $last: "$_id" } } } // remove duplicated messages for the same receiver 
   ]).exec((err, firstIds) => {
     Message.aggregate([
       { $match: { receiver: req.user._id } },
       { $group: { _id: "$sender", msgId: { $last: "$_id" } } }
     ]).exec((err, secondIds) => {
         // Message.find()
+        if([...firstIds,...secondIds].length == 0) return res.json([])
         Message.find({$or : [...firstIds,...secondIds].map(one =>{
             return {_id : one.msgId}
         })}).sort({_id : -1}).populate(["sender" , "receiver"]).exec((err,wow)=>{
